@@ -38,12 +38,10 @@ public class ProductService {
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
-    private final ProductCustomRepository productCustomRepository;
-    private final BrandCustomRepository brandCustomRepository;
 
     @Cacheable(value = "categoryMinPrices")
     public CategoriesMinPriceResponse getCategoryMinPrices() {
-        List<CategoryItemDto> minPriceProducts = productCustomRepository.findMinPriceProductsForEachCategory();
+        List<CategoryItemDto> minPriceProducts = productRepository.findMinPriceProductsForEachCategory();
         List<CategoryItemDto> distinctMinPriceProducts = removeDuplicateMinPriceProducts(minPriceProducts); // 카테고리 내 최저가가 중복인 경우 처리
         return new CategoriesMinPriceResponse(distinctMinPriceProducts);
     }
@@ -64,7 +62,7 @@ public class ProductService {
     @Cacheable(value = "brandMinTotalPrice")
     public BrandMinTotalPriceResponse getBrandMinTotalPrice() {
 
-        Brand minTotalPriceBrand = brandCustomRepository.findBrandWithMinTotalPrice();
+        Brand minTotalPriceBrand = brandRepository.findBrandWithMinTotalPrice();
         List<Product> productList = productRepository.findAllByBrand(minTotalPriceBrand);
 
         BrandMinTotalPriceResponse response = new BrandMinTotalPriceResponse(minTotalPriceBrand.getName());

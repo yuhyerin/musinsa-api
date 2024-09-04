@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductCustomRepository {
 
     Product findTop1ByCategoryOrderByPriceAsc(Category category); // 최저가 상품 조회
     Product findTop1ByCategoryOrderByPriceDesc(Category category); // 최고가 상품 조회

@@ -7,9 +7,8 @@ import com.musinsa.style.controller.dto.minmax.CategoryMinMaxPriceResponse;
 import com.musinsa.style.controller.dto.product.ProductDeleteResponse;
 import com.musinsa.style.exception.CategoryNotFoundException;
 import com.musinsa.style.exception.ProductNotFoundException;
-import com.musinsa.style.repository.BrandCustomRepository;
+import com.musinsa.style.repository.BrandRepository;
 import com.musinsa.style.repository.CategoryRepository;
-import com.musinsa.style.repository.ProductCustomRepository;
 import com.musinsa.style.repository.ProductRepository;
 import com.musinsa.style.repository.entity.Brand;
 import com.musinsa.style.repository.entity.Category;
@@ -39,10 +38,7 @@ class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
     @Mock
-    private ProductCustomRepository productCustomRepository;
-    @Mock
-    private BrandCustomRepository brandCustomRepository;
-
+    private BrandRepository brandRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -63,7 +59,7 @@ class ProductServiceTest {
         );
 
         // when
-        when(productCustomRepository.findMinPriceProductsForEachCategory()).thenReturn(mockMinPriceProductDtoList);
+        when(productRepository.findMinPriceProductsForEachCategory()).thenReturn(mockMinPriceProductDtoList);
         CategoriesMinPriceResponse response = productService.getCategoryMinPrices();
 
         // then
@@ -103,8 +99,8 @@ class ProductServiceTest {
                 , new Product(8L, "액세서리D", 2000L, categories[7], minTotalPriceBrand)
         );
 
-        // Mocking brandCustomRepository to return the brand with the lowest total price
-        when(brandCustomRepository.findBrandWithMinTotalPrice()).thenReturn(minTotalPriceBrand);
+        // Mocking brandRepository to return the brand with the lowest total price
+        when(brandRepository.findBrandWithMinTotalPrice()).thenReturn(minTotalPriceBrand);
 
         // Mocking productRepository to return products belonging to the cheapest brand
         when(productRepository.findAllByBrand(minTotalPriceBrand)).thenReturn(minPriceProducts);

@@ -45,7 +45,7 @@ public class CacheConfig {
     Caffeine<Object, Object> customCaffeineCacheBuilder(long duration, TimeUnit timeUnit, long maxSize) {
         return Caffeine.newBuilder()
                 .expireAfterWrite(duration, timeUnit)
-                .maximumSize(100);
+                .maximumSize(maxSize);
     }
 
 }
