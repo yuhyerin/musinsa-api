@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Musinsa Example</title>
+</head>
+<body>
+<h1>Musinsa 상품 정보</h1>
+<h2>1. 카테고리 별 최저가 브랜드, 상품가, 총액 조회</h2>
+<div th:if="${categoryMinPrices != null}">
+    <table border="1">
+        <thead>
+        <tr>
+            <th>카테고리</th>
+            <th>브랜드</th>
+            <th>가격</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${categoryMinPrices.minPrice.categories}">
+            <td th:text="${item.categoryName}"></td>
+            <td th:text="${item.brandName}"></td>
+            <td th:text="${item.price}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <p>총 가격: <span th:text="${categoryMinPrices.minPrice.totalPrice}"></span></p>
+</div>
+
+<h2>2. 단일 브랜드로 모든 카테고리 상품 구매 시 최저가 판매 브랜드, 가격, 총액 조회</h2>
+<div th:if="${brandMinTotalPrice != null}">
+    <p>브랜드: <span th:text="${brandMinTotalPrice.minPrice.brandName}"></span></p>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>카테고리</th>
+            <th>가격</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${brandMinTotalPrice.minPrice.categories}">
+            <td th:text="${item.categoryName}"></td>
+            <td th:text="${item.price}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <p>총 가격: <span th:text="${brandMinTotalPrice.minPrice.totalPrice}"></span></p>
+</div>
+
+<h2>3. 카테고리를 셀렉박스로 선택해서 최저, 최고가 브랜드, 가격 조회</h2>
+<div>
+    <!-- 카테고리 셀렉트 박스 -->
+    <label for="category-select">카테고리 선택:</label>
+    <select id="category-select">
+        <option value="">카테고리를 선택하세요</option>
+        <option th:each="category : ${categories}" th:value="${category.name}" th:text="${category.name}"></option>
+    </select>
+    <div id="min-max-price-info" style="display:none;">
+        <h2>최저가 및 최고가 상품 정보</h2>
+        <table border="1">
+            <thead>
+            <tr>
+                <th>구분</th>
+                <th>브랜드</th>
+                <th>가격</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>최저가</td>
+                <td id="min-brand-name"></td>
+                <td id="min-price"></td>
+            </tr>
+            <tr>
+                <td>최고가</td>
+                <td id="max-brand-name"></td>
+                <td id="max-price"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+<script>
+    $(document).ready(function() {
+        // 카테고리 셀렉트 박스 변경 시 이벤트 처리
+        $('#category-select').change(function() {
+            var selectedCategory = $(this).val();
+            if (selectedCategory) {
+                // API 호출
+                $.ajax({
+                    url: '/v1/products/categories/' + selectedCategory + '/min-max-price',
+                    method: 'GET',
+                    success: function(response) {
+                        // 응답 데이터를 화면에 표시
+                        $('#min-brand-name').text(response.data.minPrice.brandName);
+                        $('#min-price').text(response.data.minPrice.price);
+                        $('#max-brand-name').text(response.data.maxPrice.brandName);
+                        $('#max-price').text(response.data.maxPrice.price);
+
+                        // 정보 표시 영역을 보여줌
+                        $('#min-max-price-info').show();
+                    },
+                    error: function() {
+                        alert('최저가 및 최고가 정보를 불러오는 데 실패했습니다.');
+                    }
+                });
+            } else {
+                // 카테고리가 선택되지 않은 경우 정보 표시 영역을 숨김
+                $('#min-max-price-info').hide();
+            }
+        });
+    });
+</script>
+<style>
+    table {
+        width: 70%;
+        border-collapse: collapse; /* 테두리 2겹 방지 */
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd; /* 단일 테두리 */
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2; /* 테이블 헤더 배경색 */
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9; /* 짝수 행 배경색 */
+    }
+
+    tr:hover {
+        background-color: #e9e9e9; /* 마우스 오버 시 행 배경색 */
+    }
+
+    h2 {
+        margin-top: 30px;
+    }
+
+    div {
+        margin-bottom: 100px;
+    }
+</style>
+</html>

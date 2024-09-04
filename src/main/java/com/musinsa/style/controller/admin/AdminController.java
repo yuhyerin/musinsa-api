@@ -15,12 +15,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @RestController
@@ -68,6 +71,19 @@ public class AdminController {
         );
     }
 
+    @Operation(summary = "브랜드 전체 조회 API")
+    @GetMapping("/brands")
+    public ResponseEntity<MusinsaResponse<List<BrandDtoResponse>>> selectBrands() {
+        return ResponseEntity.ok(
+                MusinsaResponse.<List<BrandDtoResponse>>builder()
+                        .data(brandService.findAllBrands())
+                        .result(ResponseCode.SUCCESS.result)
+                        .message(ResponseCode.SUCCESS.message)
+                        .build()
+        );
+    }
+
+
     @Operation(summary = "상품 추가 API")
     @PostMapping("/products")
     public ResponseEntity<MusinsaResponse<ProductDtoResponse>> createProduct(@Valid @RequestBody ProductCreateRequest request) {
@@ -94,12 +110,24 @@ public class AdminController {
         );
     }
 
-    @Operation(summary = "상품 삭제 API")
-    @DeleteMapping("/products")
+    @Operation(summary = "상품 삭제 다건 API")
+    @PostMapping("/products/delete")
     public ResponseEntity<MusinsaResponse<ProductDeleteResponse>> deleteProducts(@Valid @RequestBody ProductDeleteRequest request) {
         return ResponseEntity.ok(
                 MusinsaResponse.<ProductDeleteResponse>builder()
                         .data(productService.deleteProduct(request.getProductIds()))
+                        .result(ResponseCode.SUCCESS.result)
+                        .message(ResponseCode.SUCCESS.message)
+                        .build()
+        );
+    }
+
+    @Operation(summary = "상품 전체 조회 API")
+    @GetMapping("/products")
+    public ResponseEntity<MusinsaResponse<List<ProductDtoResponse>>> selectProducts() {
+        return ResponseEntity.ok(
+                MusinsaResponse.<List<ProductDtoResponse>>builder()
+                        .data(productService.selectAllProducts())
                         .result(ResponseCode.SUCCESS.result)
                         .message(ResponseCode.SUCCESS.message)
                         .build()

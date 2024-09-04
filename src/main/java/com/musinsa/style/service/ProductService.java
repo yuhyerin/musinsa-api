@@ -146,4 +146,10 @@ public class ProductService {
                 .build();
     }
 
+    public List<ProductDtoResponse> selectAllProducts() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(ProductDtoResponse::new)
+                .collect(Collectors.toList());
+    }
 }

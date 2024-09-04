@@ -1,8 +1,9 @@
 package com.musinsa.style.controller.dto.brand;
 
 import lombok.Getter;
+import lombok.ToString;
 
-
+@ToString
 @Getter
 public class BrandMinTotalPriceResponse {
     private BrandMinPriceDto minPrice;

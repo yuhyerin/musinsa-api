@@ -1,10 +1,12 @@
 package com.musinsa.style.controller.dto.category;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 @Getter
 public class CategoryMinPriceDto {
     private List<CategoryItemDto> categories;
